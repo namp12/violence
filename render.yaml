@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: violence-detection
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: FLASK_APP
+        value: web/app.py
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASSWORD
+        sync: false
+      - key: ALERT_EMAIL
+        sync: false
+    healthCheckPath: /api/status
+    autoDeploy: true

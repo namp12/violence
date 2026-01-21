@@ -22,7 +22,10 @@ from web.email_notifier import EmailNotifier
 from src.utils.config import get_config
 
 # Initialize Flask app
-app = Flask(__name__)
+base_dir = Path(__file__).parent.absolute()
+app = Flask(__name__, 
+            static_folder=str(base_dir / 'static'),
+            template_folder=str(base_dir / 'templates'))
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['UPLOAD_FOLDER'] = str(UPLOAD_FOLDER)
 app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
