@@ -85,12 +85,9 @@ def index():
 
 @app.route('/api/status')
 def api_status():
-    """API health check."""
-    ml_ready = load_ml_components()
-    
+    """API health check - responds immediately without loading model."""
     return jsonify({
         'status': 'ok',
-        'ml_ready': ml_ready,
         'model_loaded': model is not None,
         'database_connected': DATABASE_PATH.exists()
     })
