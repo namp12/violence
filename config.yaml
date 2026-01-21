@@ -1,0 +1,111 @@
+# Configuration file for Violence Detection Project
+
+# Data paths
+data:
+  raw_data_path: "Real Life Violence Dataset"
+  processed_data_path: "data/processed"
+  frames_temp_path: "data/frames"
+  
+# Video processing parameters
+video:
+  num_frames: 16           # Number of frames to extract from each video
+  frame_height: 112        # Frame height in pixels
+  frame_width: 112         # Frame width in pixels
+  frame_channels: 3        # RGB channels
+  fps_sample: null         # If null, extract frames evenly across video duration
+
+# Data split
+split:
+  train_ratio: 0.70        # 70% for training
+  val_ratio: 0.15          # 15% for validation
+  test_ratio: 0.15         # 15% for testing
+  random_seed: 42          # For reproducibility
+
+# Model architecture
+model:
+  name: "CNN3D_Violence_Detection"
+  input_shape: [16, 112, 112, 3]
+  num_classes: 2           # violent, non_violent
+  
+  # Convolutional blocks
+  conv_blocks:
+    - filters: 32
+      kernel_size: [3, 3, 3]
+      activation: "relu"
+      pool_size: [2, 2, 2]
+    - filters: 64
+      kernel_size: [3, 3, 3]
+      activation: "relu"
+      pool_size: [2, 2, 2]
+    - filters: 128
+      kernel_size: [3, 3, 3]
+      activation: "relu"
+      pool_size: [2, 2, 2]
+    - filters: 256
+      kernel_size: [3, 3, 3]
+      activation: "relu"
+      pool_size: [2, 2, 2]
+  
+  # Dense layers
+  dense_layers:
+    - units: 512
+      dropout: 0.5
+      batch_norm: true
+    - units: 256
+      dropout: 0.5
+      batch_norm: false
+
+# Training parameters
+training:
+  batch_size: 8            # Adjust based on GPU memory
+  epochs: 50
+  initial_learning_rate: 0.0001
+  optimizer: "adam"
+  loss: "categorical_crossentropy"
+  metrics: ["accuracy"]
+  
+  # Callbacks
+  callbacks:
+    early_stopping:
+      enabled: true
+      monitor: "val_loss"
+      patience: 10
+      restore_best_weights: true
+    
+    reduce_lr:
+      enabled: true
+      monitor: "val_loss"
+      factor: 0.5
+      patience: 5
+      min_lr: 0.00001
+    
+    model_checkpoint:
+      enabled: true
+      monitor: "val_accuracy"
+      save_best_only: true
+      filepath: "models/checkpoints/best_model.h5"
+    
+    tensorboard:
+      enabled: true
+      log_dir: "models/logs"
+
+# Data augmentation
+augmentation:
+  enabled: true
+  horizontal_flip: true
+  rotation_range: 10       # degrees
+  brightness_range: [0.8, 1.2]
+  zoom_range: 0.1
+  
+# Evaluation
+evaluation:
+  batch_size: 8
+  save_confusion_matrix: true
+  save_classification_report: true
+  results_dir: "models/evaluation_results"
+
+# Prediction
+prediction:
+  model_path: "models/saved_models/best_model.h5"
+  confidence_threshold: 0.5
+  class_names: ["Non-Violent", "Violent"]
