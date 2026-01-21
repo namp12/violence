@@ -25,7 +25,11 @@ RUN pip install --no-cache-dir -r requirements_web.txt
 COPY . .
 
 # Create necessary directories
-RUN mkdir -p web/static/uploads web/database logs
+RUN mkdir -p web/static/uploads web/database logs models/checkpoints
+
+# Download model if MODEL_DOWNLOAD_URL is set (optional at build time)
+# Model will be downloaded at runtime if not present
+RUN pip install --no-cache-dir requests tqdm
 
 # Expose port
 EXPOSE 5000
@@ -34,5 +38,5 @@ EXPOSE 5000
 ENV FLASK_APP=web/app.py
 ENV PYTHONUNBUFFERED=1
 
-# Run the application
-CMD ["python", "web/app.py"]
+# Download model and run the application
+CMD python scripts/download_model.py && python web/app.py
