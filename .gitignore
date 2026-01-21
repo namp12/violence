@@ -29,6 +29,9 @@ wheels/
 checkpoints/
 logs/
 
+# Exception: Allow best_model.h5 for deployment (via Git LFS)
+!models/checkpoints/best_model.h5
+
 # Dataset - Large files
 Real Life Violence Dataset/
 real life violence situations/
@@ -43,7 +46,7 @@ web/static/uploads/*.mp4
 web/static/uploads/*.avi
 
 # Models - Large files (use Git LFS or external storage)
-models/checkpoints/
+# Individual model files ignored, but best_model.h5 is allowed above
 models/saved_models/
 
 # Database
